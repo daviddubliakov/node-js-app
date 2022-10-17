@@ -1,0 +1,21 @@
+{
+  "name": "node-js-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "start-server": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daviddubliakov/node-js-app.git"
+  },
+  "author": "David Dubliakov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daviddubliakov/node-js-app/issues"
+  },
+  "homepage": "https://github.com/daviddubliakov/node-js-app#readme"
+}
