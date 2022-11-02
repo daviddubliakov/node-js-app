@@ -1,12 +1,10 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
-const expressHandlebars = require('express-handlebars');
 
 const app = express();
 
-app.engine('hbs', expressHandlebars({ layoutsDir: 'views/layouts/', defaultLayout: 'main-layout', extname: 'hbs' }));
-app.set('view engine', 'hbs');
+app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 const adminData = require('./routes/admin');
@@ -19,7 +17,7 @@ app.use('/admin', adminData.routes);
 app.use(shopRoutes);
 
 app.use('/', (_req, res) => {
-  res.status(404).render('404', { pageTitle: 'Page Not Found' });
+  res.status(404).render('404', { pageTitle: 'Page Not Found', path: '' });
 })
 
 app.listen(3000);
