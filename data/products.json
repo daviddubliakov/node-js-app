@@ -1,8 +1,1 @@
-[
-  {
-    "title": "iPhone 14 Pro",
-    "imageUrl": "https://scdn.comfy.ua/89fc351a-22e7-41ee-8321-f8a9356ca351/https://cdn.comfy.ua/media/catalog/product/i/p/iphone-14-pro-finish-select-202209-6-1inch-deeppurple_1__2.jpg/w_600",
-    "description": "Смартфон Apple iPhone 14 Pro 512Gb Deep Purple",
-    "price": "73499"
-  }
-]
+[{"id":"123245","title":"A Book","imageUrl":"https://www.publicdomainpictures.net/pictures/10000/velka/1-1210009435EGmE.jpg","description":"This is an awesome book!","price":"19"},{"title":"A Book 2","imageUrl":"https://freepngclipart.com/save-png/17420-open-book-freevectors-image-png/800x650","description":"This is a book #2","price":"250","id":"0.8058754654275073"}]
