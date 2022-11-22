@@ -12,6 +12,13 @@ module.exports = class Product {
   }
 
   save() {
+    if (this.id) {
+      return db.execute(
+        'UPDATE products SET title = ?, price = ?, imageUrl = ?, description = ? WHERE products.id = ?',
+        [this.title, this.price, this.imageUrl, this.description, this.id]
+      );
+    }
+
     return db.execute(
       'INSERT INTO products (title, price, imageUrl, description) VALUES (?, ?, ?, ?)',
       [this.title, this.price, this.imageUrl, this.description]
@@ -19,7 +26,7 @@ module.exports = class Product {
   }
 
   static deleteById(id) {
-
+    return db.execute('DELETE FROM products WHERE products.id = ?', [id]);
   }
 
   static fetchAll() {
