@@ -179,6 +179,14 @@ form {
   text-align: center;
 }
 
+.image {
+  height: 20rem;
+}
+
+.image img {
+  height: 100%;
+}
+
 .btn {
   display: inline-block;
   padding: 0.25rem 1rem;
@@ -194,6 +202,17 @@ form {
 .btn:hover,
 .btn:active {
   background-color: #00695c;
+  color: white;
+}
+
+.btn.danger {
+  color: red;
+  border-color: red;
+}
+
+.btn.danger:hover,
+.btn.danger:active {
+  background: red;
   color: white;
 }
 
