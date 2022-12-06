@@ -20,6 +20,7 @@ class Product {
         { $set: this },
       )
     } else {
+      console.log("THIS", this);
       dbOp = db.collection('products')
         .insertOne(this)
 
@@ -53,6 +54,15 @@ class Product {
         console.log(product);
         return product;
       })
+      .catch(err => console.log(err));
+  }
+
+  static deleteById(prodId) {
+    const db = getDb();
+
+    return db.collection('products')
+      .deleteOne({ _id: new mongodb.ObjectId(prodId) })
+      .then(() => console.log('Deleted'))
       .catch(err => console.log(err));
   }
 }

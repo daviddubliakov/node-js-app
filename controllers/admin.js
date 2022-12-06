@@ -80,13 +80,13 @@ exports.getProducts = (req, res) => {
     .catch(err => console.log(err))
 };
 
-// exports.postDeleteProduct = (req, res) => {
-//   const prodId = req.body.productId;
+exports.postDeleteProduct = (req, res) => {
+  const prodId = req.body.productId;
 
-//   Product.destroy({ where: { id: prodId } })
-//     .then(() => {
-//       console.log('DESTROYED A PRODUCT');
-//       res.redirect('/admin/products');
-//     })
-//     .catch(err => console.log(err));
-// }
+  Product.deleteById(prodId)
+    .then(() => {
+      console.log('DESTROYED A PRODUCT');
+      res.redirect('/admin/products');
+    })
+    .catch(err => console.log(err));
+}
