@@ -66,7 +66,6 @@ exports.postCart = (req, res) => {
 
     })
     .then(result => {
-      console.log(result);
       res.redirect('/cart');
     })
 };
@@ -92,9 +91,8 @@ exports.postOrder = (req, res) => {
 };
 
 exports.getOrders = (req, res) => {
-  req.user.getOrders({ include: ['products'] })
+  req.user.getOrders()
     .then(orders => {
-      console.log(orders[0].products[0]);
       res.render('shop/orders', {
         path: '/orders',
         pageTitle: 'Your Orders',
