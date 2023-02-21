@@ -75,7 +75,8 @@ exports.postCart = (req, res) => {
 exports.postCardDeleteProduct = (req, res) => {
   const prodId = req.body.productId;
 
-  req.user.deleteItemFromCart(prodId)
+  req.user
+    .removeFromCart(prodId)
     .then(() => {
       res.redirect('/cart');
     })
@@ -83,7 +84,6 @@ exports.postCardDeleteProduct = (req, res) => {
 };
 
 exports.postOrder = (req, res) => {
-  let fetchedCart;
   req.user
     .addOrder()
     .then(() => {
