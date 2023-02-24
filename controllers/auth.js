@@ -1,5 +1,5 @@
 exports.getLogin = (req, res) => {
-  const isAuthenticated = req.get('Cookie').split('; ').find(c => c.includes('loggedIn')).split('=')[1];
+  const isAuthenticated = req.get('Cookie').split('; ').find(c => c.includes('loggedIn')).split('=')[1] === 'true';
   
   res.render('auth/login', {
     path: '/login',
