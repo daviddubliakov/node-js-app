@@ -18,6 +18,7 @@
     "ejs": "^2.6.1",
     "express": "^4.16.3",
     "express-handlebars": "^3.0.0",
+    "express-session": "^1.17.3",
     "mongodb": "^4.12.1",
     "mongoose": "^6.9.2",
     "mysql2": "^2.3.3",
