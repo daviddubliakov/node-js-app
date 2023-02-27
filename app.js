@@ -28,14 +28,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({ secret: 'my secret', resave: false, saveUninitialized: false, store: store }));
 
-app.use((req, _res, next) => {
-  User.findById('63f4cabcfee319e443951219').then(user => {
-    req.user = user;
-    next();
-  })
-    .catch(err => console.log(err))
-});
-
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);

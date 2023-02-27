@@ -1,17 +1,17 @@
 const Product = require('../models/product');
 
-exports.getAddProduct = (_req, res) => {
+exports.getAddProduct = (req, res) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false,
-    isAuthenticated: false
+    isAuthenticated: req.session.isLoggedIn
   });
 };
 
 exports.postAddProduct = (req, res) => {
   const { title, price, description, imageUrl } = req.body;
-  const product = new Product({ title, price, description, imageUrl, userId: req.user._id });
+  const product = new Product({ title, price, description, imageUrl, userId: req.session.user._id });
 
   product.save()
     .then(() => {
@@ -42,7 +42,7 @@ exports.getEditProduct = (req, res) => {
         path: '/admin/edit-product',
         editing: editMode,
         product,
-        isAuthenticated: false
+        isAuthenticated: req.session.isLoggedIn
       });
     })
     .catch(err => console.log(err));
@@ -54,9 +54,6 @@ exports.postEditProduct = (req, res) => {
   const updatedImageUrl = req.body.imageUrl;
   const updatedDescription = req.body.description;
   const updatedPrice = req.body.price;
-
-
-  // const product = new Product(updatedTitle, updatedPrice, updatedDescription, updatedImageUrl, prodId);
 
   Product.findById(prodId).then(product => {
     product.title = updatedTitle;
@@ -80,7 +77,7 @@ exports.getProducts = (req, res) => {
         prods: products,
         pageTitle: 'Admin Products',
         path: '/admin/products',
-        isAuthenticated: false
+        isAuthenticated: req.session.isLoggedIn
       })
     })
     .catch(err => console.log(err))
