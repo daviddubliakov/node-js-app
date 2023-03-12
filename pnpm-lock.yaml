@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   bcryptjs: ^2.4.3
   body-parser: ^1.18.3
+  connect-flash: ^0.1.1
   connect-mongodb-session: ^2.0.3
   csurf: ^1.11.0
   ejs: ^2.6.1
@@ -19,6 +20,7 @@ specifiers:
 dependencies:
   bcryptjs: 2.4.3
   body-parser: 1.20.1
+  connect-flash: 0.1.1
   connect-mongodb-session: 2.4.1
   csurf: 1.11.0
   ejs: 2.7.4
@@ -490,6 +492,11 @@ packages:
       write-file-atomic: 2.4.3
       xdg-basedir: 3.0.0
     dev: true
+
+  /connect-flash/0.1.1:
+    resolution: {integrity: sha512-2rcfELQt/ZMP+SM/pG8PyhJRaLKp+6Hk2IUBNkEit09X+vwn3QsAL3ZbYtxUn7NVPzbMTSLRDhqe0B/eh30RYA==}
+    engines: {node: '>= 0.4.0'}
+    dev: false
 
   /connect-mongodb-session/2.4.1:
     resolution: {integrity: sha512-pfTy1fAVYPhE7nFS4k/MoBm4C14PIQYz008TrZc/HIGeJhsZuxfYI5fsfC+neBZezFK28sBGHhao+9iFIjOggw==}
