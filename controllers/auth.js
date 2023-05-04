@@ -1,16 +1,12 @@
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-const nodemailer = require('nodemailer');
-const sendgridTransport = require('nodemailer-sendgrid-transport');
-
+const sgMail = require('@sendgrid/mail')
+const dotenv = require('dotenv');
 
 const User = require('../models/user');
 
-const transporter = nodemailer.createTransport(sendgridTransport({
-  auth: {
-    api_key: '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'
-  }
-}));
+dotenv.config()
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 exports.getLogin = (req, res) => {
   let message = req.flash('error');
@@ -98,7 +94,7 @@ exports.postSignup = (req, res) => {
         })
         .then(() => {
           res.redirect('/login')
-          return transporter.sendMail({
+          return sgMail.send({
             to: email,
             from: 'dubliakov1@gmail.com',
             subject: 'Weclome to Node Shop',
@@ -155,14 +151,14 @@ exports.postReset = (req, res, next) => {
         return user.save();
       })
       .then(() => {
-        res.reditect('/');
-        transporter.sendMail({
+        res.redirect('/');
+        return sgMail.send({
           to: email,
-          from: 'dubliakov1@gmail.com',
+          from: 'davidspam1488@gmail.com',
           subject: 'Password reset',
           html: `
             <p>You requested a password reset</p>
-            <p>Click this <a href="htttp://localhost:3000/reset/${token}">link</a> to set a new password</p>
+            <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password</p>
           `
 
         })
