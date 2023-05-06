@@ -79,7 +79,6 @@ exports.postSignup = (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    console.log(errors.array());
     return res.status(StatusCodes.UNPROCESSABLE_ENTITY).render('auth/signup', {
       path: '/signup',
       pageTitle: 'Signup',
