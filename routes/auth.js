@@ -8,7 +8,13 @@ const router = express.Router();
 
 router.route('/login')
   .get(authController.getLogin)
-  .post(authController.postLogin);
+  .post(
+    [
+      body('email').isEmail().withMessage('Please enter a valid email.'),
+      body('password').isLength({ min: 5 }).withMessage('Please eneter a password with at least 5 charachters.').isAlphanumeric().withMessage('Please enter a password with only numbers and text.')
+    ],
+    authController.postLogin
+  );
 
 router.route('/signup')
   .get(authController.getSignup)

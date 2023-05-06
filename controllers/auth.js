@@ -26,7 +26,7 @@ exports.getLogin = (req, res) => {
   });
 };
 
-exports.getSignup = (req, res, next) => {
+exports.getSignup = (req, res) => {
   let message = req.flash('error');
 
   if (message.length > 0) {
@@ -42,8 +42,17 @@ exports.getSignup = (req, res, next) => {
   });
 };
 
-exports.postLogin = (req, res, next) => {
+exports.postLogin = (req, res) => {
   const { email, password } = req.body;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(StatusCodes.UNPROCESSABLE_ENTITY).render('auth/login', {
+      path: '/login',
+      pageTitle: 'Login',
+      errorMessage: errors.array()[0].msg
+    });
+  }
 
   User.findOne({ email })
     .then(user => {
@@ -131,7 +140,7 @@ exports.getReset = (req, res) => {
   });
 };
 
-exports.postReset = (req, res, next) => {
+exports.postReset = (req, res) => {
   const { email } = req.body;
   crypto.randomBytes(32, (err, buffer) => {
     if (err) {
