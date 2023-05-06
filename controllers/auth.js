@@ -75,7 +75,7 @@ exports.postLogin = (req, res, next) => {
 };
 
 exports.postSignup = (req, res) => {
-  const { email, password, confirmPassword } = req.body;
+  const { email, password } = req.body;
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -86,36 +86,27 @@ exports.postSignup = (req, res) => {
     });
   }
 
-  User.findOne({ email })
-    .then(userDoc => {
-      if (userDoc) {
-        req.flash('error', 'E-Mail exists already, please pick a different one.');
-        return res.redirect('/signup');
-      }
+  bcrypt.hash(password, 12)
+    .then(hashedPassword => {
+      const user = new User({
+        email,
+        password: hashedPassword,
+        cart: { items: [] }
+      });
 
-      return bcrypt.hash(password, 12)
-        .then(hashedPassword => {
-          const user = new User({
-            email,
-            password: hashedPassword,
-            cart: { items: [] }
-          });
-
-          return user.save();
-        })
-        .then(() => {
-          res.redirect('/login')
-          return sgMail.send({
-            to: email,
-            from: 'dubliakov1@gmail.com',
-            subject: 'Weclome to Node Shop',
-            html: '<h1>You were signed up successfuly</h1>'
-          });
-        })
-        .catch(err => console.log(err));
+      return user.save();
     })
-    .catch((err) => console.log(err));
-};
+    .then(() => {
+      res.redirect('/login');
+      return sgMail.send({
+        to: email,
+        from: 'davidspam1488@gmail.com',
+        subject: 'Weclome to Node Shop',
+        html: '<h1>You were signed up successfuly</h1>'
+      });
+    })
+    .catch(err => console.log(err));
+}
 
 exports.postLogout = (req, res) => {
   req.session.destroy(err => {
