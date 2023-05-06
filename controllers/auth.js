@@ -83,7 +83,7 @@ exports.postSignup = (req, res) => {
     return res.status(StatusCodes.UNPROCESSABLE_ENTITY).render('auth/signup', {
       path: '/signup',
       pageTitle: 'Signup',
-      errorMessage: errors.array(),
+      errorMessage: errors.array()[0].msg,
     });
   }
 
