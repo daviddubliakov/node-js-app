@@ -2,6 +2,8 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const sgMail = require('@sendgrid/mail')
 const dotenv = require('dotenv');
+const { validationResult } = require('express-validator');
+const { StatusCodes } = require('http-status-codes');
 
 const User = require('../models/user');
 
@@ -73,7 +75,17 @@ exports.postLogin = (req, res, next) => {
 };
 
 exports.postSignup = (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, confirmPassword } = req.body;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    console.log(errors.array());
+    return res.status(StatusCodes.UNPROCESSABLE_ENTITY).render('auth/signup', {
+      path: '/signup',
+      pageTitle: 'Signup',
+      errorMessage: errors.array(),
+    });
+  }
 
   User.findOne({ email })
     .then(userDoc => {
