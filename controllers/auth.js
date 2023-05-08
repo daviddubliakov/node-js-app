@@ -1,14 +1,14 @@
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-const sgMail = require('@sendgrid/mail')
+const sgMail = require('@sendgrid/mail');
 const dotenv = require('dotenv');
 const { validationResult } = require('express-validator');
 const { StatusCodes } = require('http-status-codes');
 
 const User = require('../models/user');
 
-dotenv.config()
-sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+dotenv.config();
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 exports.getLogin = (req, res) => {
   let message = req.flash('error');
@@ -22,7 +22,7 @@ exports.getLogin = (req, res) => {
   res.render('auth/login', {
     path: '/login',
     pageTitle: 'Login',
-    errorMessage: message
+    errorMessage: message,
   });
 };
 
@@ -39,7 +39,12 @@ exports.getSignup = (req, res) => {
     path: '/signup',
     pageTitle: 'Signup',
     errorMessage: message,
-    oldInput: { email: "", password: "", confirmPassword: "" }
+    oldInput: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    validationErrors: [],
   });
 };
 
@@ -51,23 +56,26 @@ exports.postLogin = (req, res) => {
     return res.status(StatusCodes.UNPROCESSABLE_ENTITY).render('auth/login', {
       path: '/login',
       pageTitle: 'Login',
-      errorMessage: errors.array()[0].msg
+      errorMessage: errors.array()[0].msg,
     });
   }
 
-  User.findOne({ email })
-    .then(user => {
+  User.findOne({
+    email,
+  })
+    .then((user) => {
       if (!user) {
         req.flash('error', 'Invalid email or password');
         return res.redirect('/login');
       }
 
-      bcrypt.compare(password, user.password)
-        .then(doMatch => {
+      bcrypt
+        .compare(password, user.password)
+        .then((doMatch) => {
           if (doMatch) {
             req.session.isLoggedIn = true;
             req.session.user = user;
-            return req.session.save(err => {
+            return req.session.save((err) => {
               console.log(err);
               res.redirect('/');
             });
@@ -76,12 +84,12 @@ exports.postLogin = (req, res) => {
           req.flash('error', 'Invalid email or password');
           res.redirect('/login');
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
-          res.redirect('/login')
+          res.redirect('/login');
         });
     })
-    .catch(err => console.log(err));
+    .catch((err) => console.log(err));
 };
 
 exports.postSignup = (req, res) => {
@@ -93,16 +101,24 @@ exports.postSignup = (req, res) => {
       path: '/signup',
       pageTitle: 'Signup',
       errorMessage: errors.array()[0].msg,
-      oldInput: { email, password, confirmPassword },
+      oldInput: {
+        email,
+        password,
+        confirmPassword,
+      },
+      validationErrors: errors.array(),
     });
   }
 
-  bcrypt.hash(password, 12)
-    .then(hashedPassword => {
+  bcrypt
+    .hash(password, 12)
+    .then((hashedPassword) => {
       const user = new User({
         email,
         password: hashedPassword,
-        cart: { items: [] }
+        cart: {
+          items: [],
+        },
       });
 
       return user.save();
@@ -113,14 +129,14 @@ exports.postSignup = (req, res) => {
         to: email,
         from: 'davidspam1488@gmail.com',
         subject: 'Weclome to Node Shop',
-        html: '<h1>You were signed up successfuly</h1>'
+        html: '<h1>You were signed up successfuly</h1>',
       });
     })
-    .catch(err => console.log(err));
-}
+    .catch((err) => console.log(err));
+};
 
 exports.postLogout = (req, res) => {
-  req.session.destroy(err => {
+  req.session.destroy((err) => {
     console.log(err);
     res.redirect('/');
   });
@@ -138,7 +154,7 @@ exports.getReset = (req, res) => {
   res.render('auth/reset', {
     path: '/reset',
     pageTitle: 'Reset passeord',
-    errorMessage: message
+    errorMessage: message,
   });
 };
 
@@ -152,7 +168,7 @@ exports.postReset = (req, res) => {
     const token = buffer.toString('hex');
 
     User.findOne({ email })
-      .then(user => {
+      .then((user) => {
         if (!user) {
           req.flash('error', 'No account with that email found .');
           return res.redirect('/reset');
@@ -172,19 +188,23 @@ exports.postReset = (req, res) => {
           html: `
             <p>You requested a password reset</p>
             <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password</p>
-          `
-
-        })
+          `,
+        });
       })
-      .catch(err => console.log(err))
-  })
+      .catch((err) => console.log(err));
+  });
 };
 
 exports.getNewPassword = (req, res) => {
   const token = req.params.token;
 
-  User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
-    .then(user => {
+  User.findOne({
+    resetToken: token,
+    resetTokenExpiration: {
+      $gt: Date.now(),
+    },
+  })
+    .then((user) => {
       let message = req.flash('error');
 
       if (message.length > 0) {
@@ -198,10 +218,10 @@ exports.getNewPassword = (req, res) => {
         pageTitle: 'New password',
         errorMessage: message,
         userId: user._id.toString(),
-        passwordToken: token
+        passwordToken: token,
       });
     })
-    .catch(err => console.log(err));
+    .catch((err) => console.log(err));
 };
 
 exports.postNewPassword = (req, res) => {
@@ -209,20 +229,25 @@ exports.postNewPassword = (req, res) => {
   const { userId, password, passwordToken } = req.body;
   let resetUser = null;
 
-  User.findOne({ resetToken: passwordToken, resetTokenExpiration: { $gt: Date.now() }, _id: userId })
-    .then(user => {
+  User.findOne({
+    resetToken: passwordToken,
+    resetTokenExpiration: {
+      $gt: Date.now(),
+    },
+    _id: userId,
+  })
+    .then((user) => {
       resetUser = user;
       return bcrypt.hash(password, 12);
     })
-    .then(hashedPassword => {
+    .then((hashedPassword) => {
       resetUser.password = hashedPassword;
       resetUser.resetToken = undefined;
       resetUser.resetTokenExpiration = undefined;
       return resetUser.save();
     })
-    .then(result => {
+    .then((result) => {
       res.redirect('/login');
     })
-    .catch(err => console.log(err));
-
+    .catch((err) => console.log(err));
 };
