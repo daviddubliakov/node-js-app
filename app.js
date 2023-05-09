@@ -16,7 +16,7 @@ dotenv.config();
 const app = express();
 const store = new MongoDBStore({
   uri: process.env.MONGODB_URI,
-  collection: 'sessions'
+  collection: 'sessions',
 });
 const csrfProtection = csrf();
 
@@ -34,8 +34,8 @@ app.use(
     secret: 'my secret',
     resave: false,
     saveUninitialized: false,
-    store: store
-  })
+    store: store,
+  }),
 );
 app.use(csrfProtection);
 app.use(flash());
@@ -45,18 +45,24 @@ app.use((req, res, next) => {
     return next();
   }
   User.findById(req.session.user._id)
-    .then(user => {
+    .then((user) => {
+      if (!user) {
+        return next();
+      }
+
       req.user = user;
       next();
     })
-    .catch(err => console.log(err));
+    .catch((err) => {
+      throw new Error(err);
+    });
 });
 
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
   next();
-})
+});
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
@@ -65,8 +71,11 @@ app.use(authRoutes);
 app.use(errorController.get404);
 
 mongoose
-  .connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => app.listen(3000))
-  .catch(err => {
+  .catch((err) => {
     console.log(err);
   });
