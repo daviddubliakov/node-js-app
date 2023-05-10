@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const { StatusCodes } = require('http-status-codes');
+const mongoose = require('mongoose');
 
 const Product = require('../models/product');
 
@@ -41,6 +42,7 @@ exports.postAddProduct = (req, res) => {
   }
 
   const product = new Product({
+    _id: mongoose.Types.ObjectId('63f4cd472c0a8fa052a45b33'),
     title,
     price,
     description,
@@ -55,7 +57,7 @@ exports.postAddProduct = (req, res) => {
       res.redirect('/admin/products');
     })
     .catch((err) => {
-      console.log(err);
+      res.redirect('/500');
     });
 };
 
