@@ -42,7 +42,6 @@ exports.postAddProduct = (req, res, next) => {
   }
 
   const product = new Product({
-    _id: mongoose.Types.ObjectId('63f4cd472c0a8fa052a45b33'),
     title,
     price,
     description,
@@ -130,7 +129,11 @@ exports.postEditProduct = (req, res) => {
         res.redirect('/admin/products');
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.getProducts = (req, res) => {
@@ -145,7 +148,11 @@ exports.getProducts = (req, res) => {
         path: '/admin/products',
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.postDeleteProduct = (req, res) => {
@@ -156,5 +163,9 @@ exports.postDeleteProduct = (req, res) => {
       console.log('DESTROYED PRODUCT');
       res.redirect('/admin/products');
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
