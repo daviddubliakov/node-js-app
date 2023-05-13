@@ -20,7 +20,7 @@ exports.getAddProduct = (req, res) => {
 };
 
 exports.postAddProduct = (req, res, next) => {
-  const { title, imageUrl, price, description } = req.body;
+  const { title, image: imageUrl, price, description } = req.body;
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
