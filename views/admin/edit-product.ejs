@@ -21,7 +21,7 @@
                     value="<% if (editing) { %><%= product.title %><% } else { %><%= oldInput.title %><%}%>"
                 >
             </div>
-            <div class="form-control">
+            <!-- <div class="form-control">
                 <label for="imageUrl">Image URL</label>
                 <input
                     class="<%= validationErrors.find(e => e.path === 'imageUrl') ? 'invalid' : '' %>"
@@ -30,6 +30,10 @@
                     id="imageUrl"
                     value="<% if (editing) { %><%= product.imageUrl %><% } else { %><%= oldInput.imageUrl %><%}%>"
                 >
+            </div> -->
+            <div class="form-control">
+                <label for="imageUrl">Image</label>
+                <input type="file" name="image" id="image">
             </div>
             <div class="form-control">
                 <label for="price">Price</label>
