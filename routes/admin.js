@@ -48,9 +48,6 @@ router.post(
       .isLength({ min: 3 })
       .trim()
       .withMessage('Title should be at least 3 characters long.'),
-    body('imageUrl')
-      .isURL()
-      .withMessage('Please prive a proper URL for and image'),
     body('price').isFloat().withMessage('Please provide only numbers.'),
     body('description')
       .isLength({ min: 3, max: 400 })

@@ -20,8 +20,26 @@ exports.getAddProduct = (req, res) => {
 };
 
 exports.postAddProduct = (req, res, next) => {
-  const { title, image: imageUrl, price, description } = req.body;
+  const { title, price, description } = req.body;
+  const image = req.file;
   const errors = validationResult(req);
+
+  if (!image) {
+    return res
+      .status(StatusCodes.UNPROCESSABLE_ENTITY)
+      .render('admin/edit-product', {
+        pageTitle: 'Add Product',
+        path: '/admin/add-product',
+        editing: false,
+        errorMessage: 'Attached file is not an image.',
+        oldInput: {
+          title,
+          price,
+          description,
+        },
+        validationErrors: [],
+      });
+  }
 
   if (!errors.isEmpty()) {
     return res
@@ -33,13 +51,14 @@ exports.postAddProduct = (req, res, next) => {
         errorMessage: errors.array()[0].msg,
         oldInput: {
           title,
-          imageUrl,
           price,
           description,
         },
         validationErrors: errors.array(),
       });
   }
+
+  const imageUrl = image.path;
 
   const product = new Product({
     title,
@@ -92,7 +111,8 @@ exports.getEditProduct = (req, res) => {
 };
 
 exports.postEditProduct = (req, res) => {
-  const { title, price, productId, imageUrl, description } = req.body;
+  const { title, price, productId, description } = req.body;
+  const image = req.file;
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -105,7 +125,6 @@ exports.postEditProduct = (req, res) => {
         errorMessage: errors.array()[0].msg,
         oldInput: {
           title,
-          imageUrl,
           price,
           description,
         },
@@ -122,7 +141,10 @@ exports.postEditProduct = (req, res) => {
       product.title = title;
       product.price = price;
       product.description = description;
-      product.imageUrl = imageUrl;
+
+      if (image) {
+        product.imageUrl = image.path;
+      }
 
       return product.save().then(() => {
         console.log('UPDATED PRODUCT!');
