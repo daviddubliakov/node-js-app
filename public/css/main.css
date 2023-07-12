@@ -262,7 +262,8 @@ form {
 }
 
 .pagination a:hover,
-.pagination a:focus {
+.pagination a:focus,
+.pagination a.active {
   background-color: #00695c;
   color: #fff;
 }
