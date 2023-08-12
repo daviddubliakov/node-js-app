@@ -1,6 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
+const stripe = require('stripe')(
+  'sk_test_51NeEeAFo1K7gZOwgsikf2Kw6wrg4yOsOqyD5Q5mUUzkTOFda3eGy4cOPdv3JpZYV5QpFnFTCd6kG6DSCThqndK9r00qg8aYwTe',
+);
 
 const Product = require('../models/product');
 const Order = require('../models/order');
@@ -138,7 +141,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
     });
 };
 
-exports.postOrder = (req, res, next) => {
+exports.getCheckoutSuccess = (req, res, next) => {
   req.user
     .populate('cart.items.productId')
     .execPopulate()
@@ -241,11 +244,14 @@ exports.getInvoice = (req, res, next) => {
 };
 
 exports.getCheckout = (req, res, next) => {
+  let products;
+  let total = 0;
+
   req.user
     .populate('cart.items.productId')
     .execPopulate()
     .then((user) => {
-      const products = user.cart.items;
+      products = user.cart.items;
 
       const getTotalPrice = (productsArr) => {
         return productsArr.reduce((acc, nextProduct) => {
@@ -253,14 +259,37 @@ exports.getCheckout = (req, res, next) => {
         }, 0);
       };
 
+      total = getTotalPrice(products);
+
+      return stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        mode: 'payment',
+        line_items: products.map((p) => ({
+          price_data: {
+            product_data: {
+              name: p.productId.title,
+              description: p.productId.description,
+            },
+            unit_amount: p.productId.price * 100,
+            currency: 'usd',
+          },
+          quantity: p.quantity,
+        })),
+        success_url: `${req.protocol}://${req.get('host')}/checkout/success`,
+        cancel_url: `${req.protocol}://${req.get('host')}/checkout/cancel`,
+      });
+    })
+    .then((session) => {
       res.render('shop/checkout', {
         path: '/checkout',
         pageTitle: 'Checkout',
         products: products,
-        totalSum: getTotalPrice(products),
+        totalSum: total,
+        sessionId: session.id,
       });
     })
     .catch((err) => {
+      console.log(err);
       const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
